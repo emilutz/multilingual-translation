@@ -1,2 +1,16 @@
 # multilingual-translation
 A multilingual translation application using LLM
+
+## Building the image
+
+Creating the requirements file using `uv`:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install uv
+```
+
+Running a docker container:
+```bash
+docker compose up
+```
