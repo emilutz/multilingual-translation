@@ -12,5 +12,6 @@ pip install uv
 
 Running a docker container:
 ```bash
-docker compose up
+docker compose --profile dev up -d app-shell
+docker compose exec app-shell bash
 ```

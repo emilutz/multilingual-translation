@@ -16,7 +16,7 @@ COPY requirements.lock .
 RUN uv pip install --system --no-deps -r requirements.lock
 
 # Copy the rest of the application
-COPY . .
+COPY src .
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
