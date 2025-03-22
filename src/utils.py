@@ -8,7 +8,11 @@ class Language(Enum):
     SPANISH = "es"
     FRENCH = "fr"
     GERMAN = "de"
-    CHINESE = "zh"
+    JAPANESE = "ja"
+    ARABIC = "ar"
+    HINDI = "hi"
+    PORTUGUESE = "pt"
+    HUNGARIAN = "hu"
 
 
 class LanguageParamType(click.ParamType):
