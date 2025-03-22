@@ -1,18 +1,9 @@
-from enum import Enum
-
 import click
 
-
-class Language(Enum):
-    ENGLISH = "en"
-    SPANISH = "es"
-    FRENCH = "fr"
-    GERMAN = "de"
-    JAPANESE = "ja"
-    ARABIC = "ar"
-    HINDI = "hi"
-    PORTUGUESE = "pt"
-    HUNGARIAN = "hu"
+from constants import Language
+from translators.base_translator import BaseTranslator
+from translators.google_translator import GoogleTranslator
+from translators.hf_translator import HuggingFaceTranslator
 
 
 class LanguageParamType(click.ParamType):
@@ -38,3 +29,13 @@ class LanguageParamType(click.ParamType):
                 f"'{value}' is not a valid language. Choose from: {', '.join(valid_values)}",
                 param, ctx
             )
+
+
+def create_translator(name: str, **kwargs) -> BaseTranslator:
+    match name:
+        case "hf":
+            return HuggingFaceTranslator(**kwargs)
+        case "google":
+            return GoogleTranslator(**kwargs)
+        case _:
+            raise NotImplementedError(f"Translator '{name}' is not implemented")

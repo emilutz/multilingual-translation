@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from utils import Language
+from constants import Language
 
 
 class BaseTranslator(ABC):

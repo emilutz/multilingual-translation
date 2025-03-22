@@ -5,9 +5,10 @@ A multilingual translation application using LLM
 
 Creating the requirements file using `uv`:
 ```bash
-python3 -m venv venv
+python3 -m venv .venv
 source venv/bin/activate
 pip install uv
+uv pip compile requirements.txt -o requirements.lock
 ```
 
 Running a docker container:

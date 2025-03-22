@@ -1,7 +1,7 @@
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 from translators.base_translator import BaseTranslator
-from utils import Language
+from constants import Language
 
 
 class HuggingFaceTranslator(BaseTranslator):
@@ -13,7 +13,7 @@ class HuggingFaceTranslator(BaseTranslator):
             target_language: Language,
             model_name: str = "facebook/m2m100_418M",
         ):
-        """Initialize for the translator.
+        """Initialize the translator.
         
         Args:
             source_language: The language to translate from.

@@ -1,19 +1,21 @@
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+import asyncio
+
+from googletrans import Translator, models
 
 from translators.base_translator import BaseTranslator
-from utils import Language
+from constants import Language
 
 
 class GoogleTranslator(BaseTranslator):
-    """Text translator based on a Hugging Face LLM."""
+    """Text translator based on the Google Translate Engine."""
 
     def __init__(
             self,
             source_language: Language,
             target_language: Language,
-            model_name: str = "facebook/m2m100_418M",
+            service_urls: list | None = None,
         ):
-        """Initialize for the translator.
+        """Initialize the translator.
         
         Args:
             source_language: The language to translate from.
@@ -21,15 +23,15 @@ class GoogleTranslator(BaseTranslator):
         """
         super().__init__(source_language, target_language)
 
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.tokenizer.src_lang = self.src_lang
-
-        self.model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+        if service_urls is None:
+            self.service_urls = ["translate.googleapis.com"]
+        else:
+            self.service_urls = service_urls
 
     def translate(self, text: str) -> str:
         """Translate the provided `text`.
         
-        Perform translation through token encoding, conversion and decoding.
+        Perform translation through an asynchorouns request.
         
         Args:
             text: The text to translate.
@@ -37,13 +39,17 @@ class GoogleTranslator(BaseTranslator):
         Returns:
             The translated text.
         """
-        # create tokens from the input string
-        encoded = self.tokenizer(text, return_tensors="pt")
+        result = asyncio.run(self._request_text_translation(text))
+        return result.text
 
-        # convert the tokens from the source language to the target language
-        token_id = self.tokenizer.get_lang_id(self.target_lang)
-        generated_tokens = self.model.generate(**encoded, forced_bos_token_id=token_id)
-
-        # decode the converted tokens back to a string format
-        decoded = self.tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)
-        return decoded[0]
+    async def _request_text_translation(self, text: str) -> models.Translated:
+        """Send async request to translate `text`.
+        
+        Args:
+            text: The text to translate.
+            
+        Returns:
+            The response object.
+        """
+        async with Translator(service_urls=self.service_urls) as translator:
+            return await translator.translate(text, src=self.src_lang, dest=self.target_lang)
