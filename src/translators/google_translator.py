@@ -2,8 +2,8 @@ import asyncio
 
 from googletrans import Translator, models
 
-from translators.base_translator import BaseTranslator
 from constants import Language
+from translators.base_translator import BaseTranslator, PlaceholderPreserver
 
 
 class GoogleTranslator(BaseTranslator):
@@ -39,8 +39,12 @@ class GoogleTranslator(BaseTranslator):
         Returns:
             The translated text.
         """
-        result = asyncio.run(self._request_text_translation(text))
-        return result.text
+        placeholder_preserver = PlaceholderPreserver(text)
+
+        with placeholder_preserver as ph_text:
+            result = asyncio.run(self._request_text_translation(ph_text))
+
+        return placeholder_preserver.fill_back_placeholders(result.text)
 
     async def _request_text_translation(self, text: str) -> models.Translated:
         """Send async request to translate `text`.

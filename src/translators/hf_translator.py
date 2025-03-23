@@ -1,7 +1,7 @@
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
-from translators.base_translator import BaseTranslator
 from constants import Language
+from translators.base_translator import BaseTranslator, PlaceholderPreserver
 
 
 class HuggingFaceTranslator(BaseTranslator):
@@ -37,13 +37,18 @@ class HuggingFaceTranslator(BaseTranslator):
         Returns:
             The translated text.
         """
-        # create tokens from the input string
-        encoded = self.tokenizer(text, return_tensors="pt")
+        placeholder_preserver = PlaceholderPreserver(text)
 
-        # convert the tokens from the source language to the target language
-        token_id = self.tokenizer.get_lang_id(self.target_lang)
-        generated_tokens = self.model.generate(**encoded, forced_bos_token_id=token_id)
+        with placeholder_preserver as ph_text:
+            # create tokens from the input string
+            encoded = self.tokenizer(ph_text, return_tensors="pt")
 
-        # decode the converted tokens back to a string format
-        decoded = self.tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)
-        return decoded[0]
+            # convert the tokens from the source language to the target language
+            token_id = self.tokenizer.get_lang_id(self.target_lang)
+            generated_tokens = self.model.generate(**encoded, forced_bos_token_id=token_id)
+
+            # decode the converted tokens back to a string format
+            decoded = self.tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)
+            ph_text = decoded[0]
+
+        return placeholder_preserver.fill_back_placeholders(ph_text)
