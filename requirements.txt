@@ -1,6 +1,8 @@
 click
 numpy
 googletrans
+pandas
+pytest
 sentencepiece
 torch
 transformers
