@@ -1,3 +1,4 @@
+import os
 import logging
 import logging.config
 
@@ -5,6 +6,7 @@ import pandas as pd
 import pytest
 
 from constants import Language
+from evaluators import bert_f1_score, bleu_score, chrf_score
 from translators.google_translator import GoogleTranslator
 from translators.hf_translator import HuggingFaceTranslator
 
@@ -24,10 +26,25 @@ def test_translator_performance(test_df, Translator):
     translator = Translator(
         source_language=Language.ENGLISH, target_language=Language.HUNGARIAN
     )
-
     df = test_df.copy()
     df["predicted_value"] = df["english"].apply(lambda x: translator.translate(x.strip()))
 
-    accuracy = (df["translated_value"] == df["predicted_value"]).mean()
-    logger.info(f"{Translator.__name__} accuracy: {accuracy:.02f}")
-    assert accuracy >= 0.0
+    df["bleu_score"] = df.apply(
+        lambda row: bleu_score(row["translated_value"], row["predicted_value"]), axis=1
+    )
+    df["chrf_score"] = df.apply(
+        lambda row: chrf_score(row["translated_value"], row["predicted_value"]), axis=1
+    )
+    df["bert_f1_score"] = df.apply(
+        lambda row: bert_f1_score(
+            row["translated_value"], row["predicted_value"], lang=Language.HUNGARIAN
+        ), axis=1
+    )
+
+    logger.info(f"Performance for {Translator.__name__}:")
+    logger.info(f"\tbleu score:    {df['bleu_score'].mean():.03f}")
+    logger.info(f"\tchrf score:    {df['chrf_score'].mean():.03f}")
+    logger.info(f"\tbert f1-score: {df['bert_f1_score'].mean():.03f}")
+
+    if os.environ.get("EVAL_RESULTS_DIR", None) is not None:
+        df.to_csv(f"{os.environ['EVAL_RESULTS_DIR']}/eval_{Translator.__name__}.csv")
