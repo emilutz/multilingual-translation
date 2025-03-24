@@ -1,6 +1,5 @@
 import logging
 import logging.config
-from pathlib import Path
 
 import click
 
@@ -29,32 +28,27 @@ logger = logging.getLogger(__name__)
     type=LanguageParamType(),
     help="The language of the output text."
 )
-@click.option(
-    "--input-file", "-i",
-    type=click.Path(file_okay=True, dir_okay=False, path_type=Path),
-    help="Path to the input text file."
-)
-@click.option(
-    "--output-file", "-o",
-    type=click.Path(file_okay=True, dir_okay=False, writable=True, path_type=Path),
-    help="Path to the output text file."
-)
-def main(translator_name, source_language, target_language, input_file, output_file):
+def main(translator_name, source_language, target_language):
     """Simple translation program.
     
-    It reads text from `input_file` and writes the translation to `output_file`.
+    It translates input text interactively from `source_language` to `target_language`
+    using `translator_name`.
     """
     translator = create_translator(
         name=translator_name, source_language=source_language, target_language=target_language
     )
 
-    with open(input_file, "r") as file_in, open(output_file, "w") as file_out:
-        for line in file_in:
-            line = line.strip("\n")
-            translated_line = "" if line == "" else translator.translate(line)
+    logger.info("Input a sentence to be translated or 'quit'/'exit' to stop the program.")
 
-            file_out.write(translated_line)
-            file_out.write("\n")
+    while True:
+        input_text = input(f"({source_language.value})> ")
+
+        if input_text.lower() in ["quit", "exit"]:
+            logger.info("Stopping execution.")
+            break
+
+        translated_text = translator.translate(input_text)
+        logger.info(f"({target_language.value}): {translated_text}\n")
 
 
 if __name__ == "__main__":
