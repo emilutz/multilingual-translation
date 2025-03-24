@@ -1,22 +1,22 @@
 version: '3.8'
 
 services:
-  # Your normal application service
+  # Normal application service
   app:
     build: .
-    ports:
-      - "8000:8000"
     volumes:
       - .:/app
     networks:
       - app-network
-    command: python main.py
+    profiles:
+      - prod
+    command: python src/main.py --help
   
   # Development shell service
   app-shell:
     build: .
-    stdin_open: true  # equivalent to -i
-    tty: true         # equivalent to -t
+    stdin_open: true
+    tty: true
     volumes:
       - .:/app
     networks:
