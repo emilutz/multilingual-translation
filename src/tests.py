@@ -1,6 +1,7 @@
 import os
 import logging
 import logging.config
+from pathlib import Path
 
 import pandas as pd
 import pytest
@@ -46,5 +47,9 @@ def test_translator_performance(test_df, Translator):
     logger.info(f"\tchrf score:    {df['chrf_score'].mean():.03f}")
     logger.info(f"\tbert f1-score: {df['bert_f1_score'].mean():.03f}")
 
-    if os.environ.get("EVAL_RESULTS_DIR", None) is not None:
-        df.to_csv(f"{os.environ['EVAL_RESULTS_DIR']}/eval_{Translator.__name__}.csv")
+    eval_results_dir = os.environ.get("EVAL_RESULTS_DIR", None)
+
+    if eval_results_dir is not None:
+        eval_results_dir = Path(eval_results_dir)
+        eval_results_dir.mkdir(parents=True, exist_ok=True)
+        df.to_csv(eval_results_dir / f"eval_{Translator.__name__}.csv")

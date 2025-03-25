@@ -56,3 +56,24 @@ docker compose run app python src/main.py \
 ```
 
 You should now see a `data/news_article_en.txt` file with the content translated from Spanish. 
+
+### Run model evaluation
+
+The performance evaluation is done using 3 metrics for diversity:
+- bleu score
+- chrf score
+- bert f1-score
+
+The whole evaluation process is packaged as a unit test. For example, inside a docker container that runs in the `dev` profile, run:
+```bash
+pytest src/tests.py -s
+```
+
+This will do some basic evaluation to compute the average value for each of the 3 metrics and will display it in the command line.
+
+If you want to inspect sample specific score values for the data provided in `data/translated_output.csv`, you can ask for the output to be written to an output text file using this environment variable:
+```bash
+EVAL_RESULTS_DIR=eval pytest src/tests.py
+```
+
+You will see 2 csv files, one for each translator in the newly created `eval` folder.
