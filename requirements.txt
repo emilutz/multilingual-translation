@@ -1,8 +1,11 @@
+bert-score
 click
 numpy
 googletrans
+nltk
 pandas
 pytest
+sacrebleu
 sentencepiece
 torch
 transformers
