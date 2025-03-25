@@ -32,6 +32,15 @@ class LanguageParamType(click.ParamType):
 
 
 def create_translator(name: str, **kwargs) -> BaseTranslator:
+    """Factory method for creating a `BaseTranslator` object.
+
+    Args:
+        name: Identifier of the translator.
+        kwargs: Additional keyword arguments for the translator constructor.
+
+    Returns:
+        The translator object.
+    """
     match name:
         case "hf":
             return HuggingFaceTranslator(**kwargs)

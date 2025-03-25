@@ -7,7 +7,7 @@ from constants import Language
 
 class BaseTranslator(ABC):
     """Abstract base class for text translators.
-    
+
     Attributes:
         src_lang: The language to translate from.
         target_lang: The language to translate into.
@@ -26,9 +26,9 @@ class BaseTranslator(ABC):
     @abstractmethod
     def translate(self, text: str) -> str:
         """Translate the provided `text`.
-        
+
         This method must be implemented by all subclasses.
-        
+
         Args:
             text: The text to translate.
             

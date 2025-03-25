@@ -14,7 +14,7 @@ class HuggingFaceTranslator(BaseTranslator):
             model_name: str = "facebook/m2m100_418M",
         ):
         """Initialize the translator.
-        
+
         Args:
             source_language: The language to translate from.
             target_language: The language to translate into.
@@ -28,12 +28,12 @@ class HuggingFaceTranslator(BaseTranslator):
 
     def translate(self, text: str) -> str:
         """Translate the provided `text`.
-        
+
         Perform translation through token encoding, conversion and decoding.
-        
+
         Args:
             text: The text to translate.
-            
+
         Returns:
             The translated text.
         """

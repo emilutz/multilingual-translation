@@ -16,7 +16,7 @@ class GoogleTranslator(BaseTranslator):
             service_urls: list | None = None,
         ):
         """Initialize the translator.
-        
+
         Args:
             source_language: The language to translate from.
             target_language: The language to translate into.
@@ -30,12 +30,12 @@ class GoogleTranslator(BaseTranslator):
 
     def translate(self, text: str) -> str:
         """Translate the provided `text`.
-        
+
         Perform translation through an asynchorouns request.
-        
+
         Args:
             text: The text to translate.
-            
+
         Returns:
             The translated text.
         """
@@ -48,10 +48,10 @@ class GoogleTranslator(BaseTranslator):
 
     async def _request_text_translation(self, text: str) -> models.Translated:
         """Send async request to translate `text`.
-        
+
         Args:
             text: The text to translate.
-            
+
         Returns:
             The response object.
         """
