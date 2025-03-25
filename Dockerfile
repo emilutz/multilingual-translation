@@ -8,7 +8,6 @@ WORKDIR /app
 RUN pip install uv
 
 # Copy dependency files
-COPY pyproject.toml .
 COPY requirements.txt .
 COPY requirements.lock .
 
