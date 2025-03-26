@@ -43,7 +43,7 @@ Input a sentence to be translated or 'quit'/'exit' to stop the program.
 
 ### Run translation in "production" mode
 
-Another endpoint of this application is to perform translation based on input and output files. For this you have to run the `src/main.py` script. Let's try to do that using `docker compose`, but in the "normal application service" this time.
+Another endpoint of this application is dedicated to performing translation based on input and output files. For this you have to run the `src/main.py` script. Let's try to do that using `docker compose`, but in the "normal application service" this time.
 
 So, from outside the docker container:
 ```bash
@@ -69,7 +69,7 @@ The whole evaluation process is packaged as a unit test. For example, inside a d
 pytest src/tests.py -s
 ```
 
-This will do some basic evaluation to compute the average value for each of the 3 metrics and will display it in the command line.
+This will do some basic evaluation to compute the average value for each of the 3 metrics and will display them in the command line.
 
 If you want to inspect sample specific score values for the data provided in `data/translated_output.csv`, you can ask for the output to be written to an output text file using this environment variable:
 ```bash
